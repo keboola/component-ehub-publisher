@@ -1,0 +1,1 @@
+This component allows you to fetch data from the  Publisher endpoints of the eHub API
