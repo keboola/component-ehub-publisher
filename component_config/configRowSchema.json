@@ -1,1 +1,44 @@
-{}
+{
+  "type": "object",
+  "title": "eHUB configuration",
+  "required": [
+    "fetch_campaigns",
+    "fetch_vouchers",
+    "fetch_creatives",
+    "fetch_transactions"
+  ],
+  "properties": {
+    "fetch_campaigns": {
+      "type": "boolean",
+      "title": "Fetch Campaigns",
+      "description": "Fetch all publisher campaign data",
+      "propertyOrder": 20,
+      "format": "checkbox",
+      "default": true
+    },
+    "fetch_vouchers": {
+      "type": "boolean",
+      "title": "Fetch Vouchers",
+      "description": "Fetch all publisher voucher data",
+      "propertyOrder": 30,
+      "format": "checkbox",
+      "default": true
+    },
+    "fetch_creatives": {
+      "type": "boolean",
+      "title": "Fetch Creatives",
+      "description": "Fetch all publisher creatives data",
+      "propertyOrder": 40,
+      "format": "checkbox",
+      "default": true
+    },
+    "fetch_transactions": {
+      "type": "boolean",
+      "title": "Fetch Transactions",
+      "description": "Fetch all publisher transaction data",
+      "propertyOrder": 50,
+      "format": "checkbox",
+      "default": true
+    }
+  }
+}
