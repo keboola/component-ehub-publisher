@@ -141,6 +141,8 @@ class Component(ComponentBase):
         if failed_publishers:
             raise UserException(
                 f"Failed to authorize the connection with the following publisher IDs {failed_publishers}")
+        if not self.publisher_ids:
+            raise UserException("Cannot test connection without any publisher IDs")
 
     def fetch_and_save_campaigns(self) -> None:
         self._initialize_result_writer("campaign")
