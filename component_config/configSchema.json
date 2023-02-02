@@ -2,32 +2,26 @@
   "type": "object",
   "title": "eHUB configuration",
   "required": [
-    "authorization"
+    "api_token",
+    "publisher_ids"
   ],
   "properties": {
-    "authorization": {
-      "title": "Authorization Settings",
-      "type": "object",
-      "propertyOrder": 10,
-      "properties": {
-        "#api_token": {
-          "type": "string",
-          "title": "API Key",
-          "format": "password",
-          "propertyOrder": 10
-        },
-        "publisher_ids": {
-          "type": "string",
-          "title": "Publisher IDs",
-          "description": "Comma separated list of Publisher IDs",
-          "propertyOrder": 20
-        },
-        "test_connection": {
-          "type": "button",
-          "format": "test-connection",
-          "propertyOrder": 30
-        }
-      }
+    "#api_token": {
+      "type": "string",
+      "title": "API Key",
+      "format": "password",
+      "propertyOrder": 10
+    },
+    "publisher_ids": {
+      "type": "string",
+      "title": "Publisher IDs",
+      "description": "Comma separated list of Publisher IDs",
+      "propertyOrder": 20
+    },
+    "test_connection": {
+      "type": "button",
+      "format": "test-connection",
+      "propertyOrder": 30
     }
   }
 }

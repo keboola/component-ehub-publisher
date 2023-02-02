@@ -15,8 +15,6 @@ from keboola.utils.helpers import comma_separated_values_to_list
 from client import EHubClient, EHubClientException
 from json_parser_multi import MulitCsvJsonParser
 
-# configuration variables
-KEY_AUTHORIZATION = "authorization"
 KEY_API_TOKEN = '#api_token'
 KEY_PUBLISHER_IDS = "publisher_ids"
 
@@ -28,7 +26,7 @@ KEY_FETCH_TRANSACTIONS = "fetch_transactions"
 KEY_DESTINATION = "destination_settings"
 KEY_LOAD_MODE = "load_mode"
 
-REQUIRED_PARAMETERS = [KEY_AUTHORIZATION]
+REQUIRED_PARAMETERS = [KEY_API_TOKEN, KEY_PUBLISHER_IDS]
 REQUIRED_IMAGE_PARS = []
 
 DEFAULT_LOAD_MODE = "incremental_load"
@@ -122,13 +120,12 @@ class Component(ComponentBase):
 
     def init_client(self):
         params = self.configuration.parameters
-        authorization = params.get(KEY_AUTHORIZATION)
-        api_key = authorization.get(KEY_API_TOKEN)
+        api_key = params.get(KEY_API_TOKEN)
         self.client = EHubClient(api_key)
 
     def init_publisher_ids(self):
         params = self.configuration.parameters
-        self.publisher_ids = comma_separated_values_to_list(params.get(KEY_AUTHORIZATION).get(KEY_PUBLISHER_IDS))
+        self.publisher_ids = comma_separated_values_to_list(params.get(KEY_PUBLISHER_IDS))
 
     @sync_action('testConnection')
     def test_connection(self):
