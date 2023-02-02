@@ -1,8 +1,8 @@
 {
   "type": "object",
-  "title": "eHUB configuration",
+  "title": "eHUB Authorization",
   "required": [
-    "api_token",
+    "#api_token",
     "publisher_ids"
   ],
   "properties": {
