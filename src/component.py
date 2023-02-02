@@ -152,23 +152,36 @@ class Component(ComponentBase):
         self._initialize_result_writer("campaign_restrictions")
         parser = MulitCsvJsonParser(dont_parse_list=['commissions'])
         for publisher_id in self.publisher_ids:
-            for page in self.client.get_publisher_campaigns(publisher_id):
-                parsed = parser.parse_data(page, "campaign")
-                for table in parsed:
-                    parsed[table] = self._add_key_value_to_data(parsed[table], "publisherId", publisher_id)
-                self._get_result_writer("campaign").writerows(parsed["campaign"])
-                self._get_result_writer("campaign_categories").writerows(parsed["categories"])
-                self._get_result_writer("campaign_commission_groups").writerows(parsed["commissionGroups"])
-                self._get_result_writer("campaign_restrictions").writerows(parsed["restrictions"])
+            try:
+                for page in self.client.get_publisher_campaigns(publisher_id):
+                    parsed = parser.parse_data(page, "campaign")
+                    for table in parsed:
+                        parsed[table] = self._add_key_value_to_data(parsed[table], "publisherId", publisher_id)
+                    self._get_result_writer("campaign").writerows(parsed["campaign"])
+                    self._get_result_writer("campaign_categories").writerows(parsed["categories"])
+                    self._get_result_writer("campaign_commission_groups").writerows(parsed["commissionGroups"])
+                    self._get_result_writer("campaign_restrictions").writerows(parsed["restrictions"])
+            except EHubClientException as ehub_exc:
+                raise UserException(
+                    "Fetching data from eHUB failed, check your API Key and Publisher IDs") from ehub_exc
 
     def fetch_and_save_vouchers(self) -> None:
-        self._fetch_and_save_data_for_all_publishers("voucher", self.client.get_publisher_vouchers)
+        try:
+            self._fetch_and_save_data_for_all_publishers("voucher", self.client.get_publisher_vouchers)
+        except EHubClientException as ehub_exc:
+            raise UserException("Fetching data from eHUB failed, check your API Key and Publisher IDs") from ehub_exc
 
     def fetch_and_save_creatives(self) -> None:
-        self._fetch_and_save_data_for_all_publishers("creative", self.client.get_publisher_creatives)
+        try:
+            self._fetch_and_save_data_for_all_publishers("creative", self.client.get_publisher_creatives)
+        except EHubClientException as ehub_exc:
+            raise UserException("Fetching data from eHUB failed, check your API Key and Publisher IDs") from ehub_exc
 
     def fetch_and_save_transactions(self) -> None:
-        self._fetch_and_save_data_for_all_publishers("transaction", self.client.get_publisher_transactions)
+        try:
+            self._fetch_and_save_data_for_all_publishers("transaction", self.client.get_publisher_transactions)
+        except EHubClientException as ehub_exc:
+            raise UserException("Fetching data from eHUB failed, check your API Key and Publisher IDs") from ehub_exc
 
     def _fetch_and_save_data_for_all_publishers(self, object_name: str, fetcher_function: Callable) -> None:
         self._initialize_result_writer(object_name)
@@ -239,9 +252,6 @@ if __name__ == "__main__":
         comp.execute_action()
     except UserException as exc:
         logging.exception(exc)
-        exit(1)
-    except EHubClientException as exc:
-        logging.exception("Fetching data from eHUB failed, check your API Key and Publisher IDs")
         exit(1)
     except Exception as exc:
         logging.exception(exc)
