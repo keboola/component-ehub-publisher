@@ -17,6 +17,7 @@
         "#api_token": {
           "type": "string",
           "title": "API Key",
+          "format": "password",
           "propertyOrder": 10
         },
         "publisher_ids": {
