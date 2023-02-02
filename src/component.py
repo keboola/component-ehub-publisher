@@ -241,7 +241,7 @@ if __name__ == "__main__":
         logging.exception(exc)
         exit(1)
     except EHubClientException as exc:
-        logging.exception("Fetching data from eHUB failed, check your API Key and Publisher IDs", exc)
+        logging.exception("Fetching data from eHUB failed, check your API Key and Publisher IDs")
         exit(1)
     except Exception as exc:
         logging.exception(exc)
