@@ -1,0 +1,46 @@
+{
+  "name": "publisher_creative",
+  "description": "",
+  "primary_keys": [
+    "id",
+    "publisherId",
+    "campaignId"
+  ],
+  "fields": [
+    {
+      "name": "publisherId",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "id",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "campaignId",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "name",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "type",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "imageUrl",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "destinationUrl",
+      "description": "",
+      "base_type": "STRING"
+    }
+  ]
+}

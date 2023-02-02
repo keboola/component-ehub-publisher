@@ -1,0 +1,31 @@
+{
+  "name": "publisher_campaign_categories",
+  "description": "",
+  "primary_keys": [
+    "id",
+    "campaign_id",
+    "publisherId"
+  ],
+  "fields": [
+    {
+      "name": "campaign_id",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "publisherId",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "id",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "name",
+      "description": "",
+      "base_type": "STRING"
+    }
+  ]
+}

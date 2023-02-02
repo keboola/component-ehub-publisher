@@ -1,46 +1,60 @@
 eHUB Publisher Extractor
 =============
 
-Description
+eHub is an Internet marketing service. It is used for affiliate marketing
+
+This component allows you to fetch data from the Publisher endpoints of the eHub API
 
 **Table of contents:**
 
 [TOC]
 
-Functionality notes
-===================
-
-Prerequisites
-=============
-
-Get the API token, register application, etc.
-
-Features
-========
-
-| **Feature**             | **Note**                                      |
-|-------------------------|-----------------------------------------------|
-| Generic UI form         | Dynamic UI form                               |
-| Row Based configuration | Allows structuring the configuration in rows. |
-| oAuth                   | oAuth authentication enabled                  |
-| Incremental loading     | Allows fetching data in new increments.       |
-| Backfill mode           | Support for seamless backfill setup.          |
-| Date range filter       | Specify date range.                           |
-
 Supported endpoints
 ===================
+
+* Campaigns
+* Vouchers
+* Creative
+* Transactions
 
 If you need more endpoints, please submit your request to
 [ideas.keboola.com](https://ideas.keboola.com/)
 
+Prerequisites
+=============
+
+Get the API token on the [API page of eHUB](https://pm.ehub.cz/api/), this page also contains the Publisher IDs of your account
+
 Configuration
 =============
 
-Param 1
--------
+ - Authorization Settings (authorization) - [REQ] 
+   - API Key (#api_token) - [OPT] API key generated in eHUB 
+   - Publisher IDs (publisher_ids) - [OPT] Comma separated list of Publisher IDs
+ - Fetch Campaigns (fetch_campaigns) - [REQ] Fetch all publisher campaign data
+ - Fetch Vouchers (fetch_vouchers) - [REQ] Fetch all publisher voucher data
+ - Fetch Creatives (fetch_creatives) - [REQ] Fetch all publisher creatives data
+ - Fetch Transactions (fetch_transactions) - [REQ] Fetch all publisher transaction data
 
-Param 2
--------
+
+Sample Configuration
+=============
+
+```json
+{
+  "parameters": {
+    "authorization": {
+      "#api_token": "SECRET_VALUE",
+      "publisher_ids": "SECRET_VALUE"
+    },
+    "fetch_campaigns": true,
+    "fetch_vouchers": true,
+    "fetch_creatives": true,
+    "fetch_transactions": true
+  },
+  "action": "run"
+}
+```
 
 Output
 ======
@@ -50,8 +64,8 @@ List of tables, foreign keys, schema.
 Development
 -----------
 
-If required, change local data folder (the `CUSTOM_FOLDER` placeholder) path to
-your custom path in the `docker-compose.yml` file:
+If required, change local data folder (the `CUSTOM_FOLDER` placeholder) path to your custom path in
+the `docker-compose.yml` file:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     volumes:
@@ -59,12 +73,9 @@ your custom path in the `docker-compose.yml` file:
       - ./CUSTOM_FOLDER:/data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Clone this repository, init the workspace and run the component with following
-command:
+Clone this repository, init the workspace and run the component with following command:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-git clone https://bitbucket.org/kds_consulting_team/kds-team.ex-ehub-publisher/src/master/ kds-team.ex-ehub-publisher
-cd kds-team.ex-ehub-publisher
 docker-compose build
 docker-compose run --rm dev
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,5 +90,4 @@ Integration
 ===========
 
 For information about deployment and integration with KBC, please refer to the
-[deployment section of developers
-documentation](https://developers.keboola.com/extend/component/deployment/)
+[deployment section of developers documentation](https://developers.keboola.com/extend/component/deployment/)

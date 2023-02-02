@@ -1,0 +1,35 @@
+{
+  "name": "publisher_campaign_restrictions",
+  "description": "",
+  "primary_keys": [
+    "publisherId",
+    "campaign_id"
+  ],
+  "fields": [
+    {
+      "name": "name",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "campaign_id",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "description",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "note",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "publisherId",
+      "description": "",
+      "base_type": "STRING"
+    }
+  ]
+}

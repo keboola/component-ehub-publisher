@@ -1,0 +1,36 @@
+{
+  "name": "publisher_campaign_commission_groups",
+  "description": "",
+  "primary_keys": [
+    "campaign_id",
+    "name",
+    "publisherId"
+  ],
+  "fields": [
+    {
+      "name": "campaign_id",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "publisherId",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "name",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "commissions",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "status",
+      "description": "",
+      "base_type": "STRING"
+    }
+  ]
+}

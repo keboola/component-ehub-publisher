@@ -1,0 +1,135 @@
+{
+  "name": "publisher_transaction",
+  "description": "",
+  "primary_keys": [
+    "id",
+    "publisherId"
+  ],
+  "fields": [
+    {
+      "name": "publisherId",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "id",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "commission",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "productId",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "lastClickData1",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "creativeId",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "ip",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "campaignId",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "newCustomer",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "firstClickDateTime",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "lastClickIp",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "type",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "orderId",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "dateInserted",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "lastClickReferrerUrl",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "firstClickData2",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "status",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "firstClickData1",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "lastClickData2",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "firstClickIp",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "uuid",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "payoutStatus",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "lastClickDateTime",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "amount",
+      "description": "",
+      "base_type": "STRING"
+    },
+    {
+      "name": "clickCount",
+      "description": "",
+      "base_type": "STRING"
+    }
+  ]
+}
