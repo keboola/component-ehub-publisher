@@ -102,6 +102,9 @@ class Component(ComponentBase):
         load_mode = destination_settings.get(KEY_LOAD_MODE, DEFAULT_LOAD_MODE)
         self.incremental = load_mode != "full_load"
 
+        if not self.publisher_ids:
+            raise UserException("No publisher IDs set")
+
         if params.get(KEY_FETCH_CAMPAIGNS):
             logging.info("Fetching publisher campaign data")
             self.fetch_and_save_campaigns()
