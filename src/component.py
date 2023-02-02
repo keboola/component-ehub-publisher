@@ -140,7 +140,8 @@ class Component(ComponentBase):
                 failed_publishers.append(publisher_id)
         if failed_publishers:
             raise UserException(
-                f"Failed to authorize the connection with the following publisher IDs {failed_publishers}")
+                f"Failed to authorize the connection with the following Publisher IDs {failed_publishers}. "
+                f"Either API Key is Invalid, or the Publisher ID")
         if not self.publisher_ids:
             raise UserException("Cannot test connection without any publisher IDs")
 
