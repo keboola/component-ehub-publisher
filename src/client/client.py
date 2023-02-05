@@ -22,15 +22,18 @@ class EHubClient(HttpClient):
         self.token = token
         super().__init__(BASE_URL)
 
-    def get_single_publisher_campaign(self, publisher_id):
+    def get_single_publisher_campaign(self, publisher_id: str):
         parameters = {"apiKey": self.token, "perPage": 1, "page": 1}
         return self._get_endpoint(f"{PUBLISHER_ENDPOINT}/{publisher_id}/{CAMPAIGN_LIST_ENDPOINT}", parameters)
 
     def get_publisher_vouchers(self, publisher_id):
         return self._get_publisher_data(publisher_id, VOUCHER_LIST_ENDPOINT, "vouchers")
 
-    def get_publisher_transactions(self, publisher_id):
-        return self._get_publisher_data(publisher_id, TRANSACTION_LIST_ENDPOINT, "transactions")
+    def get_publisher_transactions(self, publisher_id, date_from: str = None, date_to: str = None):
+        extra_params = {}
+        if date_to and date_from:
+            extra_params = {"dateInsertedFrom": date_from, "dateInsertedTo": date_to}
+        return self._get_publisher_data(publisher_id, TRANSACTION_LIST_ENDPOINT, "transactions", **extra_params)
 
     def get_publisher_creatives(self, publisher_id):
         return self._get_publisher_data(publisher_id, CREATIVE_LIST_ENDPOINT, "creatives")
@@ -38,10 +41,10 @@ class EHubClient(HttpClient):
     def get_publisher_campaigns(self, publisher_id):
         return self._get_publisher_data(publisher_id, CAMPAIGN_LIST_ENDPOINT, "campaigns")
 
-    def _get_publisher_data(self, publisher_id, endpoint, object_name):
+    def _get_publisher_data(self, publisher_id, endpoint, object_name, **extra_params):
         endpoint_path = f"{PUBLISHER_ENDPOINT}/{publisher_id}/{endpoint}"
         # IMPORTANT PAGINATION STARTS AT 1 (for some reason)
-        parameters = {"apiKey": self.token, "perPage": DEFAULT_PAGE_SIZE, "page": 1}
+        parameters = {"apiKey": self.token, "perPage": DEFAULT_PAGE_SIZE, "page": 1, **extra_params}
         return self._paginate_endpoint(endpoint_path, parameters, object_name)
 
     def _paginate_endpoint(self, endpoint, parameters, data_object):

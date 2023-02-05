@@ -1,6 +1,8 @@
 import copy
 import logging
 import contextlib
+import dateparser
+import warnings
 import sys
 from functools import wraps
 import json
@@ -23,6 +25,11 @@ KEY_FETCH_VOUCHERS = "fetch_vouchers"
 KEY_FETCH_CREATIVES = "fetch_creatives"
 KEY_FETCH_TRANSACTIONS = "fetch_transactions"
 
+KEY_TRANSACTION_OPTIONS = "transaction_options"
+KEY_TRANSACTION_OPTIONS_FETCH_MODE = "fetch_mode"
+KEY_TRANSACTION_OPTIONS_DATE_FROM = "date_from"
+KEY_TRANSACTION_OPTIONS_DATE_TO = "date_to"
+
 KEY_DESTINATION = "destination_settings"
 KEY_LOAD_MODE = "load_mode"
 
@@ -30,8 +37,16 @@ REQUIRED_PARAMETERS = [KEY_API_TOKEN, KEY_PUBLISHER_IDS]
 REQUIRED_IMAGE_PARS = []
 
 DEFAULT_LOAD_MODE = "incremental_load"
+DEFAULT_DATE_FROM = "1 week ago"
+DEFAULT_DATE_TO = "now"
 
 _SYNC_ACTIONS = dict()
+
+# Ignore dateparser warnings regarding pytz
+warnings.filterwarnings(
+    "ignore",
+    message="The localize method is no longer necessary, as this time zone supports the fold attribute",
+)
 
 
 def sync_action(action_name: str):
@@ -178,18 +193,43 @@ class Component(ComponentBase):
             raise UserException("Fetching data from eHUB failed, check your API Key and Publisher IDs") from ehub_exc
 
     def fetch_and_save_transactions(self) -> None:
+        params = self.configuration.parameters
+        transaction_options = params.get(KEY_TRANSACTION_OPTIONS)
+        fetch_mode = transaction_options.get(KEY_TRANSACTION_OPTIONS_FETCH_MODE)
+
+        if fetch_mode == "full_fetch":
+            self._fetch_and_save_transactions_full()
+        else:
+            date_from = transaction_options.get(KEY_TRANSACTION_OPTIONS_DATE_FROM)
+            date_to = transaction_options.get(KEY_TRANSACTION_OPTIONS_DATE_TO)
+            self._fetch_and_save_transactions_incremental(date_from, date_to)
+
+    def _fetch_and_save_transactions_full(self):
         try:
             self._fetch_and_save_data_for_all_publishers("transaction", self.client.get_publisher_transactions)
         except EHubClientException as ehub_exc:
             raise UserException("Fetching data from eHUB failed, check your API Key and Publisher IDs") from ehub_exc
 
-    def _fetch_and_save_data_for_all_publishers(self, object_name: str, fetcher_function: Callable) -> None:
+    def _fetch_and_save_transactions_incremental(self, date_from: str = DEFAULT_DATE_FROM,
+                                                 date_to: str = DEFAULT_DATE_TO):
+        parsed_date_from = self._parse_date(date_from)
+        parsed_date_to = self._parse_date(date_to)
+        logging.info(
+            f"Fetching transaction data incrementally based on the Insert Date ; "
+            f"from {parsed_date_from} till {parsed_date_to}")
+        try:
+            self._fetch_and_save_data_for_all_publishers("transaction", self.client.get_publisher_transactions,
+                                                         date_from=parsed_date_from, date_to=parsed_date_to)
+        except EHubClientException as ehub_exc:
+            raise UserException("Fetching data from eHUB failed, check your API Key and Publisher IDs") from ehub_exc
+
+    def _fetch_and_save_data_for_all_publishers(self, object_name: str, fetcher_function: Callable, **kwargs) -> None:
         self._initialize_result_writer(object_name)
         for publisher_id in self.publisher_ids:
-            self._fetch_and_save_data(object_name, fetcher_function, publisher_id)
+            self._fetch_and_save_data(object_name, fetcher_function, publisher_id, **kwargs)
 
-    def _fetch_and_save_data(self, object_name: str, fetcher_function: Callable, publisher_id: str) -> None:
-        for page in fetcher_function(publisher_id):
+    def _fetch_and_save_data(self, object_name: str, fetcher_function: Callable, publisher_id: str, **kwargs) -> None:
+        for page in fetcher_function(publisher_id, **kwargs):
             page = self._add_key_value_to_data(page, "publisherId", publisher_id)
             self._get_result_writer(object_name).writerows(page)
 
@@ -219,6 +259,15 @@ class Component(ComponentBase):
         writer.close()
         table_definition.columns = copy.deepcopy(writer.fieldnames)
         self.write_manifest(table_definition)
+
+    @staticmethod
+    def _parse_date(date_to_parse: str) -> str:
+        try:
+            parsed = dateparser.parse(date_to_parse)
+            return parsed.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        except (AttributeError, TypeError) as err:
+            raise UserException(f"Failed to parse date {date_to_parse}, make sure the date is either in YYYY-MM-DD "
+                                f"format or relative date i.e. 5 days ago, 1 month ago, yesterday, etc.") from err
 
     # overriden base
     def execute_action(self):

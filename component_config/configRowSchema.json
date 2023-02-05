@@ -1,6 +1,7 @@
 {
   "type": "object",
   "title": "eHUB configuration",
+  "id": "rootschema",
   "required": [
     "fetch_campaigns",
     "fetch_vouchers",
@@ -39,6 +40,88 @@
       "propertyOrder": 50,
       "format": "checkbox",
       "default": true
+    },
+    "transaction_options": {
+      "type": "object",
+      "title": "Transactions Fetching Options",
+      "propertyOrder": 60,
+      "properties": {
+        "fetch_mode": {
+          "type": "string",
+          "title": "Fetch Mode",
+          "required": true,
+          "enum": [
+            "full_fetch",
+            "incremental_fetch"
+          ],
+          "options": {
+            "enum_titles": [
+              "Fetch all data",
+              "Fetch data incrementally"
+            ]
+          },
+          "propertyOrder": 10,
+          "default": true
+        },
+        "date_from": {
+          "type": "string",
+          "title": "Fetch From Date",
+          "options": {
+            "dependencies": {
+              "fetch_mode": [
+                "incremental_fetch"
+              ]
+            }
+          },
+          "default": "1 week ago",
+          "description": "Used for fetching the data with the dateInsertedFrom filter. The date should be in YYYY-MM-DD format or relative date i.e. 5 days ago, yesterday, etc.",
+          "propertyOrder": 30
+        },
+        "date_to": {
+          "type": "string",
+          "title": "Fetch To Date",
+          "options": {
+            "dependencies": {
+              "fetch_mode": [
+                "incremental_fetch"
+              ]
+            }
+          },
+          "default": "now",
+          "description": "Used for fetching the data with the dateInsertedTo filter. The date should be in YYYY-MM-DD format or relative date i.e. 5 days ago, yesterday, etc.",
+          "propertyOrder": 40
+        }
+      },
+      "options": {
+        "dependencies": {
+          "fetch_transactions": true
+        }
+      }
+    },
+    "destination_settings": {
+      "title": "Destination",
+      "type": "object",
+      "propertyOrder": 70,
+      "properties": {
+        "load_mode": {
+          "type": "string",
+          "required": true,
+          "enum": [
+            "full_load",
+            "incremental_load"
+          ],
+          "options": {
+            "enum_titles": [
+              "Full Load",
+              "Incremental Load"
+            ]
+          },
+          "default": "incremental_load",
+          "title": "Load Mode",
+          "description": "If Full load is used, the destination table will be overwritten every run. If incremental load is used, data will be upserted into the destination table. Tables with a primary key will have rows updated, tables without a primary key will have rows appended.",
+          "propertyOrder": 20
+        }
+      }
     }
   }
 }
