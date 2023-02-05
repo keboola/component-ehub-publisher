@@ -1,6 +1,5 @@
 {
   "type": "object",
-  "title": "eHUB configuration",
   "id": "rootschema",
   "required": [
     "fetch_campaigns",
