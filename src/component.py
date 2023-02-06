@@ -1,15 +1,11 @@
 import copy
 import logging
-import contextlib
 import dateparser
 import warnings
-import sys
-from functools import wraps
-import json
 
 from typing import Callable, List, Dict
 
-from keboola.component.base import ComponentBase
+from keboola.component.base import ComponentBase, sync_action
 from keboola.component.exceptions import UserException
 from keboola.csvwriter import ElasticDictWriter
 from keboola.utils.helpers import comma_separated_values_to_list
@@ -40,58 +36,11 @@ DEFAULT_LOAD_MODE = "incremental_load"
 DEFAULT_DATE_FROM = "1 week ago"
 DEFAULT_DATE_TO = "now"
 
-_SYNC_ACTIONS = dict()
-
 # Ignore dateparser warnings regarding pytz
 warnings.filterwarnings(
     "ignore",
     message="The localize method is no longer necessary, as this time zone supports the fold attribute",
 )
-
-
-def sync_action(action_name: str):
-    def decorate(func):
-        # to allow pythonic names / action name mapping
-        _SYNC_ACTIONS[action_name] = func.__name__
-
-        @wraps(func)
-        def action_wrapper(self, *args, **kwargs):
-            # override when run as sync action, because it could be also called normally within run
-            is_sync_action = self.configuration.action != 'run'
-
-            # do operations with func
-            if is_sync_action:
-                stdout_redirect = None
-                # mute logging just in case
-                logging.getLogger().setLevel(logging.FATAL)
-            else:
-                stdout_redirect = sys.stdout
-            try:
-                # when success, only specified message can be on output, so redirect stdout before.
-                with contextlib.redirect_stdout(stdout_redirect):
-                    result = func(self, *args, **kwargs)
-
-                if is_sync_action:
-                    # sync action expects valid JSON in stdout on success.
-                    if result:
-                        # expect array or object:
-                        sys.stdout.write(json.dumps(result))
-                    else:
-                        sys.stdout.write(json.dumps({'status': 'success'}))
-
-                return result
-
-            except Exception as e:
-                if is_sync_action:
-                    # sync actions expect stderr
-                    sys.stderr.write(str(e))
-                    exit(1)
-                else:
-                    raise e
-
-        return action_wrapper
-
-    return decorate
 
 
 class Component(ComponentBase):
@@ -268,27 +217,6 @@ class Component(ComponentBase):
         except (AttributeError, TypeError) as err:
             raise UserException(f"Failed to parse date {date_to_parse}, make sure the date is either in YYYY-MM-DD "
                                 f"format or relative date i.e. 5 days ago, 1 month ago, yesterday, etc.") from err
-
-    # overriden base
-    def execute_action(self):
-        """
-        Executes action defined in the configuration.
-        The default action is 'run'.
-        """
-        action = self.configuration.action
-        if not action:
-            logging.warning("No action defined in the configuration, using the default run action.")
-            action = 'run'
-
-        try:
-            # apply action mapping
-            if action != 'run':
-                action = _SYNC_ACTIONS[action]
-
-            action_method = getattr(self, action)
-        except (AttributeError, KeyError) as e:
-            raise AttributeError(f"The defined action {action} is not implemented!") from e
-        return action_method()
 
 
 """
