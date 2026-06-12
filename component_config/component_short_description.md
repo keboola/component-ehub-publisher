@@ -1,1 +1,1 @@
-eHub is an Internet marketing service. It is used for affiliate marketing
+Extracts publisher campaign, voucher, creative, and transaction data from the eHub affiliate marketing API.
